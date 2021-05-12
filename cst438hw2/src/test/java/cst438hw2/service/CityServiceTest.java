@@ -50,6 +50,9 @@ public class CityServiceTest
       CityInfo cityInfo = cityService.getCityInfo("TestCity");
       
       assertThat(cityInfo.temp).isEqualTo(32.0);
+      assertThat(cityInfo.ID).isEqualTo(1);
+      assertThat(cityInfo.district).isEqualTo("DistrictTest");
+      assertThat(cityInfo.name).isEqualTo("TestCity");
    }
    
    @Test
@@ -66,11 +69,25 @@ public class CityServiceTest
    public void test3() {
       Country country = new Country("TST", "Test Country");
       City city = new City(1, "TestCity", "DistrictTest", 100000, country);
-      City city2 = new City(1, "TestCity", "DistrictTest", 100000, country);
-      City city3 = new City(1, "TestCity", "DistrictTest", 100000, country);
+      City city2 = new City(2, "TestCity", "DistrictTest2", 100000, country);
+      City city3 = new City(3, "TestCity", "DistrictTest3", 100000, country);
       List<City> cities = new ArrayList<City>();
       cities.add(city);
       cities.add(city2);
       cities.add(city3);
+      
+      given(cityRepository.findByName("TestCity")).willReturn(cities);
+      
+      TimeAndTemp timeAndTemp = new TimeAndTemp(273.15, 100, 100);
+      
+      given(weatherService.getTimeAndTemp("TestCity")).willReturn(timeAndTemp);
+      
+      CityInfo cityInfo = cityService.getCityInfo("TestCity");
+      
+      assertThat(cityInfo.temp).isEqualTo(32.0);
+      assertThat(cityInfo.ID).isEqualTo(1);
+      assertThat(cityInfo.district).isEqualTo("DistrictTest");
+      assertThat(cityInfo.name).isEqualTo("TestCity");
+      
    }
 }
